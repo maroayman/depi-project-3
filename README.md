@@ -6,17 +6,16 @@ Production-like demo: reverse proxy (nginx), Flask API/UI with AJAX, MySQL persi
 
 ```mermaid
 flowchart LR
-  Client((Browser)) -->|HTTP :8080| Nginx
-  subgraph Compose Network
-    Nginx[nginx]
-    Web[Flask (gunicorn)]
-    DB[(MySQL 8)]
+  client[Browser] -->|HTTP :8080| nginx
+
+  subgraph "Docker Compose Network"
+    nginx[NGINX Reverse Proxy]
+    web[Flask App - Gunicorn]
+    db[MySQL 8]
   end
 
-  Nginx -->|proxy :80 → :5000| Web
-  Web -->|SQL| DB
-  classDef store fill:#fff,stroke:#999,stroke-width:1px
-  class DB store
+  nginx -->|proxy :80 -> :5000| web
+  web -->|SQLAlchemy| db
 ```
 
 ## Quick Start (Local)
@@ -28,7 +27,7 @@ docker compose up -d --build
 ```
 
 **Health & Metrics**
-- `GET /healthz` → OK when DB reachable & table present
+- `GET /health` → OK when DB reachable & table present
 - `GET /metrics` → Prometheus text (uptime, requests, notes count)
 
 **API**
@@ -84,7 +83,7 @@ docker compose ps
 
 6) **Test from your machine**
 - Visit: `http://EC2_PUBLIC_IP:8080`
-- Health: `curl -fsS http://EC2_PUBLIC_IP:8080/healthz`
+- Health: `curl -fsS http://EC2_PUBLIC_IP:8080/health`
 - Metrics: `curl -fsS http://EC2_PUBLIC_IP:8080/metrics`
 
 7) **Logs & troubleshooting**
@@ -101,6 +100,7 @@ Common fixes:
 ```bash
 docker compose down
 docker volume rm flask-notes-compose_mysql_data
+docker compose down -v (better option)
 docker compose up -d --build
 ```
 
@@ -154,7 +154,7 @@ curl -X PUT -H "Content-Type: application/json" \
 curl -X DELETE http://EC2_PUBLIC_IP:8080/notes/1
 
 # Health
-curl -f http://EC2_PUBLIC_IP:8080/healthz
+curl -f http://EC2_PUBLIC_IP:8080/health
 
 # Metrics
 curl http://EC2_PUBLIC_IP:8080/metrics
@@ -163,4 +163,4 @@ curl http://EC2_PUBLIC_IP:8080/metrics
 ## Notes
 - Tailwind uses CDN for simplicity; for production, consider a Node-based build to purge unused styles.
 - `/metrics` is basic and in-process; for advanced needs, use a Prometheus client.
-- `/healthz` queries the DB and checks the `notes` table.
+- `/health` queries the DB and checks the `notes` table.
