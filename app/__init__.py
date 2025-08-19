@@ -32,8 +32,8 @@ def create_app():
     app.register_blueprint(main_bp)
     app.register_blueprint(metrics_bp)
 
-    @app.get("/healthz")
-    def healthz():
+    @app.get("/health")
+    def health():
         try:
             with app.app_context():
                 db.session.execute(db.text("SELECT 1"))  # DB reachable
