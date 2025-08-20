@@ -4,3 +4,4 @@ SQLAlchemy==2.0.31
 mysql-connector-python==9.0.0
 gunicorn==22.0.0
 Werkzeug==3.0.2
+flowpipe
