@@ -42,7 +42,7 @@ ENV PYTHONUNBUFFERED=1 \
     GUNICORN_CMD_ARGS="--workers=2 --threads=4 --timeout=60 --bind 0.0.0.0:5000 --access-logfile - --error-logfile -" \
     FLASK_APP="app:create_app()"
 
-HEALTHCHECK --interval=10s --timeout=3s --retries=10 CMD curl -fsS http://127.0.0.1:5000/healthz || exit 1
+HEALTHCHECK --interval=10s --timeout=3s --retries=10 CMD curl -fsS http://127.0.0.1:5000/health || exit 1
 
 ENTRYPOINT ["/app/entrypoint.sh"]
 CMD ["gunicorn", "app:create_app()"]
