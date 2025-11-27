@@ -119,18 +119,28 @@ flake8
 
 ## Project Structure
 ```
-app/
-  templates/ (Tailwind via CDN)
-  static/app.js (AJAX)
-  models.py, routes.py, metrics.py, extensions.py, __init__.py
-migrations/ (Flask-Migrate + Alembic)
-nginx/nginx.conf
-Dockerfile (multi-stage, non-root)
-docker-compose.yml (web, db, nginx)
-entrypoint.sh (wait for DB + migrations + start gunicorn)
-.env.example
-requirements.txt
-.flake8
+.
+├── app/
+│   ├── __init__.py
+│   ├── models.py
+│   ├── routes.py
+│   ├── metrics.py
+│   ├── extensions.py
+│   ├── templates/            # HTML (Tailwind via CDN)
+│   └── static/
+│       └── app.js            # AJAX logic
+│
+├── migrations/               # Alembic + Flask-Migrate files
+│
+├── nginx/
+│   └── nginx.conf            # Reverse proxy to web app
+│
+├── Dockerfile                # Multi-stage build (non-root)
+├── docker-compose.yml        # Services: web, db, nginx
+├── entrypoint.sh             # Wait for DB → run migrations → Gunicorn
+├── requirements.txt
+├── .env.example
+└── .flake8
 ```
 
 ---
